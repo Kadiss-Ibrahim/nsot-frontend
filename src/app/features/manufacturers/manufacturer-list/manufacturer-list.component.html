@@ -1,0 +1,19 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Manufacturers</h1>
+
+  @if (loading) {
+    <p class="text-gray-500">Chargement...</p>
+  }
+
+  @if (error) {
+    <p class="text-red-600">{{ error }}</p>
+  }
+
+  @if (!loading && !error) {
+    <ul class="space-y-2">
+      @for (m of manufacturers; track m.id) {
+        <li class="p-3 bg-white shadow rounded">{{ m.nom }}</li>
+      }
+    </ul>
+  }
+</div>
