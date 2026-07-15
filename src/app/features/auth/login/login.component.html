@@ -1,0 +1,26 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <form (ngSubmit)="onSubmit()" class="bg-white p-8 rounded shadow-md w-80 space-y-4">
+    <h1 class="text-xl font-bold text-center">NSoT Login</h1>
+
+    @if (error) {
+      <p class="text-red-600 text-sm text-center">{{ error }}</p>
+    }
+
+    <div>
+      <label for="username" class="block text-sm mb-1">Username</label>
+      <input id="username" [(ngModel)]="username" name="username"
+             class="w-full border rounded px-3 py-2" required />
+    </div>
+
+    <div>
+      <label for="password" class="block text-sm mb-1">Password</label>
+      <input id="password" [(ngModel)]="password" name="password" type="password"
+             class="w-full border rounded px-3 py-2" required />
+    </div>
+
+    <button type="submit"
+            class="w-full bg-slate-900 text-white py-2 rounded hover:bg-slate-800">
+      Se connecter
+    </button>
+  </form>
+</div>
