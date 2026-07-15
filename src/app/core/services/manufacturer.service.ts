@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ManufacturerRequest, ManufacturerResponse } from '../models/manufacturer.model';
@@ -8,8 +8,7 @@ import { ManufacturerRequest, ManufacturerResponse } from '../models/manufacture
 })
 export class ManufacturerService {
   private baseUrl = 'http://localhost:8080/api/v1/manufacturers';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   findAll(): Observable<ManufacturerResponse[]> {
     return this.http.get<ManufacturerResponse[]>(this.baseUrl);

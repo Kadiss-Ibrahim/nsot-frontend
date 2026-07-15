@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DeviceRequest, DeviceResponse, DeviceStatus } from '../models/device.model';
@@ -8,8 +8,7 @@ import { DeviceRequest, DeviceResponse, DeviceStatus } from '../models/device.mo
 })
 export class DeviceService {
   private baseUrl = 'http://localhost:8080/api/v1/devices';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   findAll(): Observable<DeviceResponse[]> {
     return this.http.get<DeviceResponse[]>(this.baseUrl);

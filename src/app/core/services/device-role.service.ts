@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DeviceRoleRequest, DeviceRoleResponse } from '../models/device-role.model';
@@ -8,8 +8,7 @@ import { DeviceRoleRequest, DeviceRoleResponse } from '../models/device-role.mod
 })
 export class DeviceRoleService {
   private baseUrl = 'http://localhost:8080/api/v1/device-roles';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   findAll(): Observable<DeviceRoleResponse[]> {
     return this.http.get<DeviceRoleResponse[]>(this.baseUrl);

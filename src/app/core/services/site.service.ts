@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SiteRequest, SiteResponse } from '../models/site.model';
@@ -8,8 +8,7 @@ import { SiteRequest, SiteResponse } from '../models/site.model';
 })
 export class SiteService {
   private baseUrl = 'http://localhost:8080/api/v1/sites';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   findAll(): Observable<SiteResponse[]> {
     return this.http.get<SiteResponse[]>(this.baseUrl);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManufacturerService } from '../../../core/services/manufacturer.service';
 import { ManufacturerResponse } from '../../../core/models/manufacturer.model';
@@ -13,8 +13,7 @@ export class ManufacturerListComponent implements OnInit {
   manufacturers: ManufacturerResponse[] = [];
   loading = true;
   error: string | null = null;
-
-  constructor(private manufacturerService: ManufacturerService) {}
+  private manufacturerService = inject(ManufacturerService);
 
   ngOnInit(): void {
     this.manufacturerService.findAll().subscribe({
@@ -22,7 +21,7 @@ export class ManufacturerListComponent implements OnInit {
         this.manufacturers = data;
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Erreur lors du chargement des manufacturers';
         this.loading = false;
       }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,14 +14,16 @@ export class LoginComponent {
   username = '';
   password = '';
   error: string | null = null;
-
-  constructor(private authService: AuthService, private router: Router) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   onSubmit(): void {
     this.error = null;
-    this.authService.login({ username: this.username, password: this.password }).subscribe({
+    const authService = this.authService;
+    const router = this.router;
+    authService.login({ username: this.username, password: this.password }).subscribe({
       next: () => {
-        this.router.navigate(['/manufacturers']);
+        router.navigate(['/manufacturers']);
       },
       error: () => {
         this.error = 'Identifiants incorrects';

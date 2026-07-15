@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserRequest, UserResponse } from '../models/user.model';
@@ -8,8 +8,7 @@ import { UserRequest, UserResponse } from '../models/user.model';
 })
 export class UserService {
   private baseUrl = 'http://localhost:8080/api/v1/users';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   findAll(): Observable<UserResponse[]> {
     return this.http.get<UserResponse[]>(this.baseUrl);
