@@ -1,19 +1,35 @@
 <div class="p-6">
   <h1 class="text-2xl font-bold mb-4">Manufacturers</h1>
 
-  @if (loading) {
-    <p class="text-gray-500">Chargement...</p>
-  }
-
   @if (error) {
-    <p class="text-red-600">{{ error }}</p>
+    <p class="text-red-600 mb-4">{{ error }}</p>
   }
 
-  @if (!loading && !error) {
-    <ul class="space-y-2">
-      @for (m of manufacturers; track m.id) {
-        <li class="p-3 bg-white shadow rounded">{{ m.nom }}</li>
-      }
-    </ul>
-  }
+  <p-table
+    [value]="manufacturers"
+    [loading]="loading"
+    [paginator]="true"
+    [rows]="10"
+    styleClass="p-datatable-sm"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-manufacturer>
+      <tr>
+        <td>{{ manufacturer.id }}</td>
+        <td>{{ manufacturer.nom }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="2" class="text-center text-gray-500">Aucun manufacturer trouvé</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

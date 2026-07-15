@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ManufacturerService } from '../../../core/services/manufacturer.service';
 import { ManufacturerResponse } from '../../../core/models/manufacturer.model';
-
+import { TableModule } from 'primeng/table';
 @Component({
   selector: 'app-manufacturer-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TableModule],
   templateUrl: './manufacturer-list.component.html'
 })
 export class ManufacturerListComponent implements OnInit {
