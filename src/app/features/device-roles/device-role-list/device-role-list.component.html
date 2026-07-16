@@ -1,0 +1,29 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Device Roles</h1>
+
+  @if (error) {
+    <p class="text-red-600 mb-4">{{ error }}</p>
+  }
+
+  <p-table [value]="deviceRoles" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-sm">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-role>
+      <tr>
+        <td>{{ role.id }}</td>
+        <td>{{ role.nom }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="2" class="text-center text-gray-500">Aucun rôle trouvé</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
