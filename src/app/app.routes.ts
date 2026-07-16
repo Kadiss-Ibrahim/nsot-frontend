@@ -8,6 +8,7 @@ import { DeviceListComponent } from './features/devices/device-list/device-list.
 import { UserListComponent } from './features/users/user-list/user-list.component';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
+import { ManufacturerFormComponent } from './features/manufacturers/manufacturer-form/manufacturer-form.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
@@ -17,6 +18,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'devices', pathMatch: 'full' },
+      { path: 'manufacturers', component: ManufacturerListComponent },
+      { path: 'manufacturers/new', component: ManufacturerFormComponent },
+      { path: 'manufacturers/:id/edit', component: ManufacturerFormComponent },
       { path: 'devices', component: DeviceListComponent },
       { path: 'sites', component: SiteListComponent },
       { path: 'manufacturers', component: ManufacturerListComponent },
