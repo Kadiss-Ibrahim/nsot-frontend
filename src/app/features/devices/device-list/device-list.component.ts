@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -14,6 +14,7 @@ import { SiteService } from '../../../core/services/site.service';
 import { DeviceResponse, DeviceStatus } from '../../../core/models/device.model';
 import { SiteResponse } from '../../../core/models/site.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-device-list',
@@ -24,7 +25,7 @@ import { AuthService } from '../../../core/services/auth.service';
   ],
   templateUrl: './device-list.component.html'
 })
-export class DeviceListComponent implements OnInit {
+export class DeviceListComponent implements OnInit, OnDestroy {
   devices: DeviceResponse[] = [];
   sites: SiteResponse[] = [];
   loading = true;
@@ -42,6 +43,9 @@ export class DeviceListComponent implements OnInit {
   searchStatus: DeviceStatus | null = null;
   statusOptions: DeviceStatus[] = ['PRODUCTION', 'STANDBY', 'CRITICAL', 'DECOMMISSIONED'];
 
+  private searchSubject = new Subject<void>();
+  private searchSubscription?: Subscription;
+
   private deviceService = inject(DeviceService);
   private siteService = inject(SiteService);
   private confirmationService = inject(ConfirmationService);
@@ -55,6 +59,33 @@ export class DeviceListComponent implements OnInit {
   ngOnInit(): void {
     this.loadDevices();
     this.loadSites();
+
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(300)
+    ).subscribe(() => {
+      this.onSearch();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  }
+
+  onFilterChange(): void {
+    this.searchSubject.next();
+  }
+
+  hasActiveFilters(): boolean {
+    return !!(
+      this.searchHostname ||
+      this.searchManagementIp ||
+      this.searchSerialNumber ||
+      this.searchModel ||
+      this.searchSiteId ||
+      this.searchStatus
+    );
   }
 
   loadDevices(): void {

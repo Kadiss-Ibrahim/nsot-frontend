@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserRequest, UserResponse } from '../models/user.model';
+import { UserRequest, UserResponse, UserRole } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,4 +29,11 @@ export class UserService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
-}
+
+  search(username?: string, role?: UserRole): Observable<UserResponse[]> {
+    let params = new HttpParams();
+    if (username) params = params.set('username', username);
+    if (role) params = params.set('role', role);
+    return this.http.get<UserResponse[]>(`${this.baseUrl}/search`, { params });
+  }
+}

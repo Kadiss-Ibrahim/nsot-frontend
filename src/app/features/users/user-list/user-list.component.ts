@@ -1,28 +1,56 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
-import { UserResponse } from '../../../core/models/user.model';
+import { UserResponse, UserRole } from '../../../core/models/user.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, RouterLink],
+  imports: [CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule, SelectModule, RouterLink],
   templateUrl: './user-list.component.html'
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent implements OnInit, OnDestroy {
   users: UserResponse[] = [];
   loading = true;
   error: string | null = null;
+
+  searchUsername = '';
+  searchRole: UserRole | null = null;
+  roleOptions: UserRole[] = ['ADMIN', 'READONLY'];
+
+  private searchSubject = new Subject<void>();
+  private searchSubscription?: Subscription;
+
   private userService = inject(UserService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
 
   ngOnInit(): void {
     this.loadUsers();
+
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(300)
+    ).subscribe(() => this.onSearch());
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription?.unsubscribe();
+  }
+
+  onFilterChange(): void {
+    this.searchSubject.next();
+  }
+
+  hasActiveFilters(): boolean {
+    return !!(this.searchUsername || this.searchRole);
   }
 
   loadUsers(): void {
@@ -37,6 +65,27 @@ export class UserListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onSearch(): void {
+    this.loading = true;
+    this.error = null;
+    this.userService.search(this.searchUsername || undefined, this.searchRole || undefined).subscribe({
+      next: (data) => {
+        this.users = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Erreur lors de la recherche';
+        this.loading = false;
+      }
+    });
+  }
+
+  resetSearch(): void {
+    this.searchUsername = '';
+    this.searchRole = null;
+    this.loadUsers();
   }
 
   confirmDelete(user: UserResponse): void {
@@ -68,4 +117,4 @@ export class UserListComponent implements OnInit {
       }
     });
   }
-}
+}

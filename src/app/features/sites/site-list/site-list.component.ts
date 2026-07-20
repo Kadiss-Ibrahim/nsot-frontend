@@ -1,22 +1,33 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { RouterLink } from '@angular/router';
 import { SiteService } from '../../../core/services/site.service';
 import { SiteResponse } from '../../../core/models/site.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
+import { Subject, Subscription, debounceTime } from 'rxjs';
+
 @Component({
   selector: 'app-site-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, RouterLink],
+  imports: [CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule, RouterLink],
   templateUrl: './site-list.component.html'
 })
-export class SiteListComponent implements OnInit {
+export class SiteListComponent implements OnInit, OnDestroy {
   sites: SiteResponse[] = [];
   loading = true;
   error: string | null = null;
+
+  searchNom = '';
+  searchVille = '';
+
+  private searchSubject = new Subject<void>();
+  private searchSubscription?: Subscription;
+
   private siteService = inject(SiteService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
@@ -28,6 +39,22 @@ export class SiteListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSites();
+
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(300)
+    ).subscribe(() => this.onSearch());
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription?.unsubscribe();
+  }
+
+  onFilterChange(): void {
+    this.searchSubject.next();
+  }
+
+  hasActiveFilters(): boolean {
+    return !!(this.searchNom || this.searchVille);
   }
 
   loadSites(): void {
@@ -42,6 +69,27 @@ export class SiteListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onSearch(): void {
+    this.loading = true;
+    this.error = null;
+    this.siteService.search(this.searchNom || undefined, this.searchVille || undefined).subscribe({
+      next: (data) => {
+        this.sites = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Erreur lors de la recherche';
+        this.loading = false;
+      }
+    });
+  }
+
+  resetSearch(): void {
+    this.searchNom = '';
+    this.searchVille = '';
+    this.loadSites();
   }
 
   confirmDelete(site: SiteResponse): void {
@@ -73,4 +121,4 @@ export class SiteListComponent implements OnInit {
       }
     });
   }
-}
+}
