@@ -1,7 +1,9 @@
 <div class="p-6">
   <div class="flex justify-between items-center mb-4">
     <h1 class="text-2xl font-bold">Device Roles</h1>
-    <p-button label="Nouveau" icon="pi pi-plus" routerLink="/device-roles/new" />
+    @if (isAdmin()) {
+      <p-button label="Nouveau" icon="pi pi-plus" routerLink="/device-roles/new" />
+    }
   </div>
 
   @if (error) {
@@ -21,8 +23,10 @@
         <td>{{ role.nom }}</td>
         <td>
           <div class="flex gap-1">
-            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [routerLink]="['/device-roles', role.id, 'edit']" />
-            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" (onClick)="confirmDelete(role)" />
+            @if (isAdmin()) {
+              <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [routerLink]="['/device-roles', role.id, 'edit']" />
+              <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" (onClick)="confirmDelete(role)" />
+            }
           </div>
         </td>
       </tr>

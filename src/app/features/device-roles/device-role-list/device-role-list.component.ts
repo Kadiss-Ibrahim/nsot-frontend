@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 import { DeviceRoleService } from '../../../core/services/device-role.service';
 import { DeviceRoleResponse } from '../../../core/models/device-role.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
-
+import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-device-role-list',
   standalone: true,
@@ -20,6 +20,11 @@ export class DeviceRoleListComponent implements OnInit {
   private deviceRoleService = inject(DeviceRoleService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
+  private authService = inject(AuthService);
+
+  isAdmin(): boolean {
+    return this.authService.getRole() === 'ADMIN';
+  }
 
   ngOnInit(): void {
     this.loadDeviceRoles();

@@ -3,7 +3,9 @@
     <h1 class="text-2xl font-bold">Devices</h1>
     <div class="flex gap-2">
       <p-button label="Exporter Excel" icon="pi pi-file-excel" severity="success" (onClick)="exportToExcel()" />
-      <p-button label="Nouveau" icon="pi pi-plus" routerLink="/devices/new" />
+      @if (isAdmin()) {
+        <p-button label="Nouveau" icon="pi pi-plus" routerLink="/devices/new" />
+      }
     </div>
   </div>
 
@@ -87,8 +89,10 @@
         <td>{{ device.managementIp || '-' }}</td>
         <td class="flex gap-1">
           <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="secondary" (onClick)="showDetail(device)" />
-          <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" [routerLink]="['/devices', device.id, 'edit']" />
-          <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="confirmDelete(device)" />
+          @if (isAdmin()) {
+            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" [routerLink]="['/devices', device.id, 'edit']" />
+            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="confirmDelete(device)" />
+          }
         </td>
       </tr>
     </ng-template>

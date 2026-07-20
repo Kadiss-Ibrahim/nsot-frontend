@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-manufacturer-list',
@@ -21,7 +22,11 @@ export class ManufacturerListComponent implements OnInit {
   private manufacturerService = inject(ManufacturerService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
+  private authService = inject(AuthService);
 
+  isAdmin(): boolean {
+    return this.authService.getRole() === 'ADMIN';
+  }
   ngOnInit(): void {
     this.loadManufacturers();
   }

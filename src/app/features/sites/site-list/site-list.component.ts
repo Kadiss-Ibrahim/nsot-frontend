@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 import { SiteService } from '../../../core/services/site.service';
 import { SiteResponse } from '../../../core/models/site.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
-
+import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-site-list',
   standalone: true,
@@ -20,6 +20,11 @@ export class SiteListComponent implements OnInit {
   private siteService = inject(SiteService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
+  private authService = inject(AuthService);
+
+  isAdmin(): boolean {
+    return this.authService.getRole() === 'ADMIN';
+  }
 
   ngOnInit(): void {
     this.loadSites();
