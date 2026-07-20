@@ -1,5 +1,8 @@
 <div class="p-6">
-  <h1 class="text-2xl font-bold mb-4">Devices</h1>
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Devices</h1>
+    <p-button label="Nouveau" icon="pi pi-plus" routerLink="/devices/new" />
+  </div>
 
   @if (error) {
     <p class="text-red-600 mb-4">{{ error }}</p>
@@ -14,6 +17,7 @@
         <th>Manufacturer</th>
         <th>Statut</th>
         <th>IP Management</th>
+        <th>Actions</th>
       </tr>
     </ng-template>
 
@@ -27,13 +31,104 @@
           <p-tag [value]="device.status" [severity]="statusSeverity(device.status)" />
         </td>
         <td>{{ device.managementIp || '-' }}</td>
+        <td class="flex gap-1">
+          <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="secondary" (onClick)="showDetail(device)" />
+          <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" [routerLink]="['/devices', device.id, 'edit']" />
+          <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="confirmDelete(device)" />
+        </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="6" class="text-center text-gray-500">Aucun device trouvé</td>
+        <td colspan="7" class="text-center text-gray-500">Aucun device trouvé</td>
       </tr>
     </ng-template>
   </p-table>
 </div>
+
+<!-- Dialog de détail (lecture seule) -->
+<p-dialog
+  header="Détails du device"
+  [(visible)]="detailDialogVisible"
+  [modal]="true"
+  [style]="{ width: '32rem' }"
+  [draggable]="false"
+>
+  @if (selectedDevice) {
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <div>
+        <span class="font-semibold block text-gray-500">Hostname</span>
+        <span>{{ selectedDevice.hostname }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Statut</span>
+        <p-tag [value]="selectedDevice.status" [severity]="statusSeverity(selectedDevice.status)" />
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Site</span>
+        <span>{{ selectedDevice.site?.nom || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Rôle</span>
+        <span>{{ selectedDevice.deviceRole?.nom || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Manufacturer</span>
+        <span>{{ selectedDevice.manufacturer?.nom || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Model</span>
+        <span>{{ selectedDevice.model || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Serial Number</span>
+        <span>{{ selectedDevice.serialNumber || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">IP Management</span>
+        <span>{{ selectedDevice.managementIp || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">OS</span>
+        <span>{{ selectedDevice.os || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Version actuelle</span>
+        <span>{{ selectedDevice.currentVersion || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Rack</span>
+        <span>{{ selectedDevice.rack || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Position rack</span>
+        <span>{{ selectedDevice.rackPosition || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Criticité</span>
+        @if (selectedDevice.criticality) {
+          <p-tag [value]="selectedDevice.criticality" [severity]="criticalitySeverity(selectedDevice.criticality)" />
+        } @else {
+          <span>-</span>
+        }
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Owner</span>
+        <span>{{ selectedDevice.owner || '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Dernière révision</span>
+        <span>{{ selectedDevice.lastReview ? (selectedDevice.lastReview | date:'dd/MM/yyyy') : '-' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Créé le</span>
+        <span>{{ selectedDevice.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div>
+        <span class="font-semibold block text-gray-500">Modifié le</span>
+        <span>{{ selectedDevice.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </div>
+  }
+</p-dialog>

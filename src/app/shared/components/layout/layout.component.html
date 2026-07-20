@@ -27,11 +27,14 @@
          class="block px-4 py-2 rounded hover:bg-slate-800 transition">
         Device Roles
       </a>
-      <a routerLink="/users"
-         routerLinkActive="bg-slate-700"
-         class="block px-4 py-2 rounded hover:bg-slate-800 transition">
-        Users
-      </a>
+
+      @if (isAdmin()) {
+        <a routerLink="/users"
+           routerLinkActive="bg-slate-700"
+           class="block px-4 py-2 rounded hover:bg-slate-800 transition">
+          Users
+        </a>
+      }
     </nav>
   </aside>
 

@@ -1,0 +1,121 @@
+<div class="p-6 max-w-xl">
+  <h1 class="text-2xl font-bold mb-6">
+    {{ isEditMode ? 'Modifier' : 'Créer' }} un device
+  </h1>
+
+  @if (error) {
+    <p-message severity="error" [text]="error" styleClass="mb-4 w-full" />
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label for="hostname" class="block text-sm font-medium mb-1">Hostname</label>
+      <input pInputText id="hostname" formControlName="hostname" class="w-full" />
+      @if (form.get('hostname')?.invalid && form.get('hostname')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le hostname est obligatoire (minimum 2 caractères)</p>
+      }
+    </div>
+
+    <div>
+      <label for="siteId" class="block text-sm font-medium mb-1">Site</label>
+      <select id="siteId" formControlName="siteId" class="w-full rounded border-gray-300 px-3 py-2">
+        <option [ngValue]="null">Sélectionner un site</option>
+        <option *ngFor="let site of sites" [ngValue]="site.id">{{ site.nom }} - {{ site.ville }}</option>
+      </select>
+      @if (form.get('siteId')?.invalid && form.get('siteId')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le site est obligatoire</p>
+      }
+    </div>
+
+    <div>
+      <label for="deviceRoleId" class="block text-sm font-medium mb-1">Rôle</label>
+      <select id="deviceRoleId" formControlName="deviceRoleId" class="w-full rounded border-gray-300 px-3 py-2">
+        <option [ngValue]="null">Sélectionner un rôle</option>
+        <option *ngFor="let role of deviceRoles" [ngValue]="role.id">{{ role.nom }}</option>
+      </select>
+      @if (form.get('deviceRoleId')?.invalid && form.get('deviceRoleId')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le rôle est obligatoire</p>
+      }
+    </div>
+
+    <div>
+      <label for="manufacturerId" class="block text-sm font-medium mb-1">Manufacturer</label>
+      <select id="manufacturerId" formControlName="manufacturerId" class="w-full rounded border-gray-300 px-3 py-2">
+        <option [ngValue]="null">Sélectionner un fabricant</option>
+        <option *ngFor="let manufacturer of manufacturers" [ngValue]="manufacturer.id">{{ manufacturer.nom }}</option>
+      </select>
+      @if (form.get('manufacturerId')?.invalid && form.get('manufacturerId')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le fabricant est obligatoire</p>
+      }
+    </div>
+
+    <div>
+      <label for="status" class="block text-sm font-medium mb-1">Statut</label>
+      <select id="status" formControlName="status" class="w-full rounded border-gray-300 px-3 py-2">
+        <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+      </select>
+      @if (form.get('status')?.invalid && form.get('status')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le statut est obligatoire</p>
+      }
+    </div>
+
+    <div>
+      <label for="model" class="block text-sm font-medium mb-1">Modèle</label>
+      <input pInputText id="model" formControlName="model" class="w-full" />
+    </div>
+
+    <div>
+      <label for="serialNumber" class="block text-sm font-medium mb-1">Serial Number</label>
+      <input pInputText id="serialNumber" formControlName="serialNumber" class="w-full" />
+    </div>
+
+    <div>
+      <label for="managementIp" class="block text-sm font-medium mb-1">IP Management</label>
+      <input pInputText id="managementIp" formControlName="managementIp" class="w-full" />
+    </div>
+
+    <div>
+      <label for="os" class="block text-sm font-medium mb-1">OS</label>
+      <input pInputText id="os" formControlName="os" class="w-full" />
+    </div>
+
+    <div>
+      <label for="currentVersion" class="block text-sm font-medium mb-1">Version actuelle</label>
+      <input pInputText id="currentVersion" formControlName="currentVersion" class="w-full" />
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="rack" class="block text-sm font-medium mb-1">Rack</label>
+        <input pInputText id="rack" formControlName="rack" class="w-full" />
+      </div>
+      <div>
+        <label for="rackPosition" class="block text-sm font-medium mb-1">Position rack</label>
+        <input pInputText id="rackPosition" formControlName="rackPosition" class="w-full" />
+      </div>
+    </div>
+
+    <div>
+      <label for="criticality" class="block text-sm font-medium mb-1">Criticité</label>
+      <select id="criticality" formControlName="criticality" class="w-full rounded border-gray-300 px-3 py-2">
+        <option [ngValue]="null">Non définie</option>
+        <option *ngFor="let level of criticalityOptions" [value]="level">{{ level }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="owner" class="block text-sm font-medium mb-1">Owner</label>
+      <input pInputText id="owner" formControlName="owner" class="w-full" />
+    </div>
+
+    <div>
+      <label for="lastReview" class="block text-sm font-medium mb-1">Dernière révision</label>
+      <input pInputText type="date" id="lastReview" formControlName="lastReview" class="w-full" />
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <p-button type="submit" label="Enregistrer" [loading]="loading" [disabled]="form.invalid" />
+      <p-button type="button" label="Annuler" severity="secondary" (onClick)="onCancel()" />
+    </div>
+  </form>
+</div>

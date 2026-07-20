@@ -20,7 +20,10 @@
       <tr>
         <td>{{ manufacturer.nom }}</td>
         <td>
-          <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [routerLink]="['/manufacturers', manufacturer.id, 'edit']" />
+          <div class="flex gap-1">
+            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [routerLink]="['/manufacturers', manufacturer.id, 'edit']" />
+            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" (onClick)="confirmDelete(manufacturer)" />
+          </div>
         </td>
       </tr>
     </ng-template>

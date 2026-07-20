@@ -1,0 +1,46 @@
+<div class="p-6 max-w-md">
+  <h1 class="text-2xl font-bold mb-6">
+    {{ isEditMode ? 'Modifier' : 'Créer' }} un utilisateur
+  </h1>
+
+  @if (error) {
+    <p-message severity="error" [text]="error" styleClass="mb-4 w-full" />
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label for="username" class="block text-sm font-medium mb-1">Username</label>
+      <input pInputText id="username" formControlName="username" class="w-full" />
+      @if (form.get('username')?.invalid && form.get('username')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le nom d'utilisateur est obligatoire (minimum 3 caractères)</p>
+      }
+    </div>
+
+    <div>
+      <label for="password" class="block text-sm font-medium mb-1">Mot de passe</label>
+      <input pInputText id="password" type="password" formControlName="password" class="w-full" />
+      @if (isEditMode) {
+        <p class="text-sm text-slate-500 mt-1">Laisser vide pour conserver le mot de passe actuel</p>
+      }
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le mot de passe doit contenir au moins 6 caractères</p>
+      }
+    </div>
+
+    <div>
+      <label for="role" class="block text-sm font-medium mb-1">Rôle</label>
+      <select id="role" formControlName="role" class="w-full rounded border-gray-300 px-3 py-2">
+        <option value="ADMIN">ADMIN</option>
+        <option value="READONLY">READONLY</option>
+      </select>
+      @if (form.get('role')?.invalid && form.get('role')?.touched) {
+        <p class="text-red-600 text-sm mt-1">Le rôle est obligatoire</p>
+      }
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <p-button type="submit" label="Enregistrer" [loading]="loading" [disabled]="form.invalid" />
+      <p-button type="button" label="Annuler" severity="secondary" (onClick)="onCancel()" />
+    </div>
+  </form>
+</div>

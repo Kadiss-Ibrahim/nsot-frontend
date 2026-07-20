@@ -1,5 +1,8 @@
 <div class="p-6">
-  <h1 class="text-2xl font-bold mb-4">Device Roles</h1>
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Device Roles</h1>
+    <p-button label="Nouveau" icon="pi pi-plus" routerLink="/device-roles/new" />
+  </div>
 
   @if (error) {
     <p class="text-red-600 mb-4">{{ error }}</p>
@@ -9,18 +12,25 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Nom</th>
+        <th>Actions</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-role>
       <tr>
         <td>{{ role.nom }}</td>
+        <td>
+          <div class="flex gap-1">
+            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [routerLink]="['/device-roles', role.id, 'edit']" />
+            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" (onClick)="confirmDelete(role)" />
+          </div>
+        </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="1" class="text-center text-gray-500">Aucun rôle trouvé</td>
+        <td colspan="2" class="text-center text-gray-500">Aucun rôle trouvé</td>
       </tr>
     </ng-template>
   </p-table>
