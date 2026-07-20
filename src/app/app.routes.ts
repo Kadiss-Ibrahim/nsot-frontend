@@ -9,6 +9,11 @@ import { UserListComponent } from './features/users/user-list/user-list.componen
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { ManufacturerFormComponent } from './features/manufacturers/manufacturer-form/manufacturer-form.component';
+import { DeviceFormComponent } from './features/devices/device-form/device-form.component';
+import { SiteFormComponent } from './features/sites/site-form/site-form.component';
+import { DeviceRoleFormComponent } from './features/device-roles/device-role-form/device-role-form.component';
+import { UserFormComponent } from './features/users/user-form/user-form.component';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
@@ -21,11 +26,18 @@ export const routes: Routes = [
       { path: 'manufacturers', component: ManufacturerListComponent },
       { path: 'manufacturers/new', component: ManufacturerFormComponent },
       { path: 'manufacturers/:id/edit', component: ManufacturerFormComponent },
-      { path: 'devices', component: DeviceListComponent },
-      { path: 'sites', component: SiteListComponent },
-      { path: 'manufacturers', component: ManufacturerListComponent },
       { path: 'device-roles', component: DeviceRoleListComponent },
-      { path: 'users', component: UserListComponent },
+      { path: 'device-roles/new', component: DeviceRoleFormComponent },
+      { path: 'device-roles/:id/edit', component: DeviceRoleFormComponent },
+      { path: 'sites', component: SiteListComponent },
+      { path: 'sites/new', component: SiteFormComponent },
+      { path: 'sites/:id/edit', component: SiteFormComponent },
+      { path: 'users', component: UserListComponent, canActivate: [adminGuard]  },
+      { path: 'users/new', component: UserFormComponent },
+      { path: 'users/:id/edit', component: UserFormComponent },
+      { path: 'devices', component: DeviceListComponent },
+      { path: 'devices/new', component: DeviceFormComponent },
+      { path: 'devices/:id/edit', component: DeviceFormComponent },
     ]
   }
 ];
