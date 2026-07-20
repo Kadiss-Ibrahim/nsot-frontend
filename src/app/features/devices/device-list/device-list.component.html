@@ -1,8 +1,62 @@
 <div class="p-6">
   <div class="flex justify-between items-center mb-4">
     <h1 class="text-2xl font-bold">Devices</h1>
-    <p-button label="Nouveau" icon="pi pi-plus" routerLink="/devices/new" />
+    <div class="flex gap-2">
+      <p-button label="Exporter Excel" icon="pi pi-file-excel" severity="success" (onClick)="exportToExcel()" />
+      <p-button label="Nouveau" icon="pi pi-plus" routerLink="/devices/new" />
+    </div>
   </div>
+
+  <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
+  <div class="flex-1 min-w-[160px]">
+    <label class="block text-sm font-medium mb-1">Hostname</label>
+    <input pInputText [(ngModel)]="searchHostname" placeholder="Hostname..." class="w-full" />
+  </div>
+
+  <div class="flex-1 min-w-[160px]">
+    <label class="block text-sm font-medium mb-1">Adresse IP</label>
+    <input pInputText [(ngModel)]="searchManagementIp" placeholder="IP..." class="w-full" />
+  </div>
+
+  <div class="flex-1 min-w-[160px]">
+    <label class="block text-sm font-medium mb-1">Numéro de série</label>
+    <input pInputText [(ngModel)]="searchSerialNumber" placeholder="Serial..." class="w-full" />
+  </div>
+
+  <div class="flex-1 min-w-[160px]">
+    <label class="block text-sm font-medium mb-1">Modèle</label>
+    <input pInputText [(ngModel)]="searchModel" placeholder="Modèle..." class="w-full" />
+  </div>
+
+  <div class="min-w-[200px]">
+    <label class="block text-sm font-medium mb-1">Site</label>
+    <p-select
+      [(ngModel)]="searchSiteId"
+      [options]="sites"
+      optionLabel="nom"
+      optionValue="id"
+      placeholder="Tous les sites"
+      [showClear]="true"
+      class="w-full"
+    />
+  </div>
+
+  <div class="min-w-[180px]">
+    <label class="block text-sm font-medium mb-1">Statut</label>
+    <p-select
+      [(ngModel)]="searchStatus"
+      [options]="statusOptions"
+      placeholder="Tous les statuts"
+      [showClear]="true"
+      class="w-full"
+    />
+  </div>
+
+  <div class="flex gap-2">
+    <p-button label="Rechercher" icon="pi pi-search" (onClick)="onSearch()" />
+    <p-button label="Réinitialiser" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="resetSearch()" />
+  </div>
+</div>
 
   @if (error) {
     <p class="text-red-600 mb-4">{{ error }}</p>

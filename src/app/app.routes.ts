@@ -14,6 +14,7 @@ import { SiteFormComponent } from './features/sites/site-form/site-form.componen
 import { DeviceRoleFormComponent } from './features/device-roles/device-role-form/device-role-form.component';
 import { UserFormComponent } from './features/users/user-form/user-form.component';
 import { adminGuard } from './core/guards/admin.guard';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
@@ -22,7 +23,8 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'devices', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },  
       { path: 'manufacturers', component: ManufacturerListComponent },
       { path: 'manufacturers/new', component: ManufacturerFormComponent },
       { path: 'manufacturers/:id/edit', component: ManufacturerFormComponent },
