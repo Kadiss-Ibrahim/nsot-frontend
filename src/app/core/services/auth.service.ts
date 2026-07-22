@@ -37,7 +37,19 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    if (!token) return false;
+
+    const payload = this.decodeToken();
+    if (!payload) return false;
+
+    const isExpired = payload.exp * 1000 < Date.now();
+    if (isExpired) {
+      this.logout();
+      return false;
+    }
+
+    return true;
   }
 
   getRole(): string | null {

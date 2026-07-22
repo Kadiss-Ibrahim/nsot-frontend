@@ -3,6 +3,8 @@ import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/rou
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmationService } from 'primeng/api';
+
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -11,8 +13,8 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class LayoutComponent {
   private authService = inject(AuthService);
-    private router = inject(Router);
-
+  private router = inject(Router);
+  private confirmationService = inject(ConfirmationService);
 
   isAdmin(): boolean {
     return this.authService.getRole() === 'ADMIN';
@@ -20,6 +22,19 @@ export class LayoutComponent {
 
   getUsername(): string | null {
     return this.authService.getUsername();
+  }
+
+  confirmLogout(): void {
+    this.confirmationService.confirm({
+      message: 'Voulez-vous vraiment vous déconnecter ?',
+      header: 'Confirmation de déconnexion',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Se déconnecter',
+      rejectLabel: 'Annuler',
+      acceptButtonProps: { severity: 'danger' },
+      rejectButtonProps: { severity: 'secondary', outlined: true },
+      accept: () => this.logout()
+    });
   }
 
   logout(): void {
