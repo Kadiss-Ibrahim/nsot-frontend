@@ -4,7 +4,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../core/services/auth.service';
 import { ConfirmationService } from 'primeng/api';
-
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -20,10 +19,6 @@ export class LayoutComponent {
     return this.authService.getRole() === 'ADMIN';
   }
 
-  getUsername(): string | null {
-    return this.authService.getUsername();
-  }
-
   confirmLogout(): void {
     this.confirmationService.confirm({
       message: 'Voulez-vous vraiment vous déconnecter ?',
@@ -35,6 +30,10 @@ export class LayoutComponent {
       rejectButtonProps: { severity: 'secondary', outlined: true },
       accept: () => this.logout()
     });
+  }
+
+  getUsername(): string | null {
+    return this.authService.getUsername();
   }
 
   logout(): void {
