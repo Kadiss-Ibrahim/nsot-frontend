@@ -1,64 +1,120 @@
-<div class="p-6">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold">Users</h1>
-    <p-button label="Nouveau" icon="pi pi-plus" routerLink="/users/new" />
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>
+        <div class="header-icon bg-indigo-100 text-indigo-600">
+          <i class="pi pi-users"></i>
+        </div>
+        Utilisateurs
+        <span class="result-count ml-2" *ngIf="!loading">{{ users.length }}</span>
+      </h1>
+      <p class="page-subtitle">Gérez les accès à la plateforme NSoT</p>
+    </div>
+    <div class="page-header-actions">
+      <p-button label="Nouvel Utilisateur" icon="pi pi-user-plus" routerLink="/users/new" />
+    </div>
   </div>
 
   @if (error) {
-  <p class="text-red-600 mb-4">{{ error }}</p>
+    <div class="error-banner">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>{{ error }}</span>
+    </div>
   }
 
-  <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
-    <div class="flex-1 min-w-[160px]">
-      <label for="search-user-username" class="block text-sm font-medium mb-1">Username</label>
-      <input pInputText id="search-user-username" [(ngModel)]="searchUsername" (ngModelChange)="onFilterChange()"
-        placeholder="Rechercher par username..." class="w-full" />
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="search-user-username">Username</label>
+      <div class="p-input-icon-left w-full">
+        <i class="pi pi-search"></i>
+        <input pInputText id="search-user-username" [(ngModel)]="searchUsername" (ngModelChange)="onFilterChange()" placeholder="Rechercher par username..." class="w-full" />
+      </div>
     </div>
-    <div class="min-w-[160px]">
-      <label for="search-user-role" class="block text-sm font-medium mb-1">Rôle</label>
-      <p-select id="search-user-role" [(ngModel)]="searchRole" (ngModelChange)="onFilterChange()"
-        [options]="roleOptions" placeholder="Tous les rôles" [showClear]="true" class="w-full" />
+    
+    <div class="filter-field">
+      <label for="search-user-role">Rôle d'accès</label>
+      <p-select 
+        id="search-user-role" 
+        [(ngModel)]="searchRole" 
+        (ngModelChange)="onFilterChange()"
+        [options]="roleOptions" 
+        placeholder="Tous les rôles" 
+        [showClear]="true" 
+        class="w-full" 
+      />
     </div>
+    
     @if (hasActiveFilters()) {
-    <div class="flex gap-2">
-      <p-button label="Réinitialiser" icon="pi pi-times" severity="secondary" [outlined]="true"
-        (onClick)="resetSearch()" />
-    </div>
+      <div>
+        <p-button label="Effacer" icon="pi pi-filter-slash" severity="secondary" [text]="true" (onClick)="resetSearch()" />
+      </div>
     }
   </div>
 
-  <p-table [value]="users" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-sm">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Username</th>
-        <th>Rôle</th>
-        <th>Créé le</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
+  <!-- Table Card -->
+  <div class="card-elevated animate-fade-in-up delay-1">
+    <p-table [value]="users" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-striped p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage {first} à {last} sur {totalRecords} utilisateurs">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Username</th>
+          <th>Rôle</th>
+          <th>Créé le</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="body" let-user>
-      <tr>
-        <td>{{ user.username }}</td>
-        <td>{{ user.role }}</td>
-        <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
-        <td>
-          <div class="flex gap-1">
-            @if (!user.isProtected) {
-            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [routerLink]="['/users', user.id, 'edit']" />
-            <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" (onClick)="confirmDelete(user)" />
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">
+                {{ user.username.charAt(0).toUpperCase() }}
+              </div>
+              <span class="font-semibold text-slate-900">{{ user.username }}</span>
+            </div>
+          </td>
+          <td>
+            @if (user.role === 'ADMIN') {
+              <p-tag value="ADMIN" severity="info" styleClass="bg-indigo-100 text-indigo-700" />
             } @else {
-            <p-tag value="Protégé" severity="secondary" icon="pi pi-lock" />
+              <p-tag value="READONLY" severity="secondary" />
             }
-          </div>
-        </td>
-      </tr>
-    </ng-template>
+          </td>
+          <td class="text-slate-600 text-sm">
+            {{ user.createdAt | date:'dd/MM/yyyy' }}
+          </td>
+          <td>
+            <div class="flex gap-1 justify-end items-center">
+              @if (!user.isProtected) {
+                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" pTooltip="Modifier" tooltipPosition="top" [routerLink]="['/users', user.id, 'edit']" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" pTooltip="Supprimer" tooltipPosition="top" (onClick)="confirmDelete(user)" />
+              } @else {
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 text-slate-500 text-xs font-medium mr-2" pTooltip="Utilisateur système" tooltipPosition="top">
+                  <i class="pi pi-lock text-[10px]"></i>
+                  Protégé
+                </span>
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4" class="text-center text-gray-500">Aucun utilisateur trouvé</td>
-      </tr>
-    </ng-template>
-  </p-table>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i class="pi pi-users"></i>
+              </div>
+              <div class="empty-state-title">Aucun utilisateur trouvé</div>
+              <p class="empty-state-text">Nous n'avons trouvé aucun utilisateur correspondant à vos critères de recherche.</p>
+              <p-button label="Ajouter un utilisateur" icon="pi pi-plus" [routerLink]="['/users/new']" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

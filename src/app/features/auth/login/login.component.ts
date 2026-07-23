@@ -14,6 +14,7 @@ export class LoginComponent {
   username = '';
   password = '';
   error: string | null = null;
+  currentYear = new Date().getFullYear();
   private authService = inject(AuthService);
   private router = inject(Router);
 

@@ -1,37 +1,61 @@
-<div class="p-6">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold">Devices</h1>
-    <div class="flex gap-2">
-      <p-button label="Exporter Excel" icon="pi pi-file-excel" severity="success" (onClick)="exportToExcel()" />
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>
+        <div class="header-icon bg-indigo-100 text-indigo-600">
+          <i class="pi pi-server"></i>
+        </div>
+        Devices
+        <span class="result-count ml-2" *ngIf="!loading">{{ devices.length }}</span>
+      </h1>
+      <p class="page-subtitle">Gérez l'inventaire de vos équipements réseaux</p>
+    </div>
+    <div class="page-header-actions">
+      <p-button label="Exporter" icon="pi pi-file-excel" severity="secondary" [outlined]="true" (onClick)="exportToExcel()" />
       @if (isAdmin()) {
-        <p-button label="Nouveau" icon="pi pi-plus" routerLink="/devices/new" />
+        <p-button label="Nouveau Device" icon="pi pi-plus" routerLink="/devices/new" />
       }
     </div>
   </div>
 
-  <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
-    <div class="flex-1 min-w-[160px]">
-      <label for="search-hostname" class="block text-sm font-medium mb-1">Hostname</label>
-      <input pInputText id="search-hostname" [(ngModel)]="searchHostname" (ngModelChange)="onFilterChange()" placeholder="Hostname..." class="w-full" />
+  @if (error) {
+    <div class="error-banner">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>{{ error }}</span>
+    </div>
+  }
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="search-hostname">Hostname</label>
+      <div class="p-input-icon-left w-full">
+        <i class="pi pi-search"></i>
+        <input pInputText id="search-hostname" [(ngModel)]="searchHostname" (ngModelChange)="onFilterChange()" placeholder="Rechercher..." class="w-full" />
+      </div>
     </div>
 
-    <div class="flex-1 min-w-[160px]">
-      <label for="search-ip" class="block text-sm font-medium mb-1">Adresse IP</label>
-      <input pInputText id="search-ip" [(ngModel)]="searchManagementIp" (ngModelChange)="onFilterChange()" placeholder="IP..." class="w-full" />
+    <div class="filter-field">
+      <label for="search-ip">Adresse IP</label>
+      <div class="p-input-icon-left w-full">
+        <i class="pi pi-globe"></i>
+        <input pInputText id="search-ip" [(ngModel)]="searchManagementIp" (ngModelChange)="onFilterChange()" placeholder="IP..." class="w-full" />
+      </div>
     </div>
-
-    <div class="flex-1 min-w-[160px]">
-      <label for="search-serial" class="block text-sm font-medium mb-1">Numéro de série</label>
+    
+    <div class="filter-field">
+      <label for="search-serial">Numéro de série</label>
       <input pInputText id="search-serial" [(ngModel)]="searchSerialNumber" (ngModelChange)="onFilterChange()" placeholder="Serial..." class="w-full" />
     </div>
 
-    <div class="flex-1 min-w-[160px]">
-      <label for="search-model" class="block text-sm font-medium mb-1">Modèle</label>
+    <div class="filter-field">
+      <label for="search-model">Modèle</label>
       <input pInputText id="search-model" [(ngModel)]="searchModel" (ngModelChange)="onFilterChange()" placeholder="Modèle..." class="w-full" />
     </div>
 
-    <div class="min-w-[200px]">
-      <label for="search-site" class="block text-sm font-medium mb-1">Site</label>
+    <div class="filter-field">
+      <label for="search-site">Site</label>
       <p-select
         id="search-site"
         [(ngModel)]="searchSiteId"
@@ -45,8 +69,8 @@
       />
     </div>
 
-    <div class="min-w-[180px]">
-      <label for="search-status" class="block text-sm font-medium mb-1">Statut</label>
+    <div class="filter-field">
+      <label for="search-status">Statut</label>
       <p-select 
         id="search-status"
         [(ngModel)]="searchStatus"
@@ -59,138 +83,194 @@
     </div>
 
     @if (hasActiveFilters()) {
-      <div class="flex gap-2">
-        <p-button label="Réinitialiser" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="resetSearch()" />
+      <div>
+        <p-button label="Effacer" icon="pi pi-filter-slash" severity="secondary" [text]="true" (onClick)="resetSearch()" />
       </div>
     }
   </div>
 
-  @if (error) {
-    <p class="text-red-600 mb-4">{{ error }}</p>
-  }
+  <!-- Table Card -->
+  <div class="card-elevated animate-fade-in-up delay-1">
+    <p-table [value]="devices" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-striped p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage {first} à {last} sur {totalRecords} devices">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Hostname</th>
+          <th>Site</th>
+          <th>Rôle</th>
+          <th>Manufacturer</th>
+          <th>Statut</th>
+          <th>IP Management</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </ng-template>
 
-  <p-table [value]="devices" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-sm">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Hostname</th>
-        <th>Site</th>
-        <th>Rôle</th>
-        <th>Manufacturer</th>
-        <th>Statut</th>
-        <th>IP Management</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
+      <ng-template pTemplate="body" let-device>
+        <tr>
+          <td class="font-semibold text-slate-900">{{ device.hostname }}</td>
+          <td>{{ device.site?.nom || '-' }}</td>
+          <td>{{ device.deviceRole?.nom || '-' }}</td>
+          <td>{{ device.manufacturer?.nom || '-' }}</td>
+          <td>
+            <p-tag [value]="device.status" [severity]="statusSeverity(device.status)" />
+          </td>
+          <td class="font-mono text-sm text-slate-600">{{ device.managementIp || '-' }}</td>
+          <td>
+            <div class="flex gap-1 justify-end">
+              <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="secondary" pTooltip="Détails" tooltipPosition="top" (onClick)="showDetail(device)" />
+              @if (isAdmin()) {
+                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" pTooltip="Modifier" tooltipPosition="top" [routerLink]="['/devices', device.id, 'edit']" />
+                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Supprimer" tooltipPosition="top" (onClick)="confirmDelete(device)" />
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="body" let-device>
-      <tr>
-        <td>{{ device.hostname }}</td>
-        <td>{{ device.site?.nom || '-' }}</td>
-        <td>{{ device.deviceRole?.nom || '-' }}</td>
-        <td>{{ device.manufacturer?.nom || '-' }}</td>
-        <td>
-          <p-tag [value]="device.status" [severity]="statusSeverity(device.status)" />
-        </td>
-        <td>{{ device.managementIp || '-' }}</td>
-        <td class="flex gap-1">
-          <p-button icon="pi pi-eye" [rounded]="true" [text]="true" severity="secondary" (onClick)="showDetail(device)" />
-          @if (isAdmin()) {
-            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" [routerLink]="['/devices', device.id, 'edit']" />
-            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="confirmDelete(device)" />
-          }
-        </td>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="7" class="text-center text-gray-500">Aucun device trouvé</td>
-      </tr>
-    </ng-template>
-  </p-table>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i class="pi pi-search"></i>
+              </div>
+              <div class="empty-state-title">Aucun device trouvé</div>
+              <p class="empty-state-text">Nous n'avons trouvé aucun équipement correspondant à vos critères de recherche.</p>
+              @if (isAdmin()) {
+                <p-button label="Ajouter un device" icon="pi pi-plus" [routerLink]="['/devices/new']" />
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
 
 <!-- Dialog de détail (lecture seule) -->
 <p-dialog
-  header="Détails du device"
   [(visible)]="detailDialogVisible"
   [modal]="true"
-  [style]="{ width: '32rem' }"
+  [style]="{ width: '720px' }"
   [draggable]="false"
+  [resizable]="false"
 >
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-md bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
+        <i class="pi pi-server"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold m-0 text-slate-900">{{ selectedDevice?.hostname }}</h2>
+        <div class="text-sm text-slate-500 mt-1">Détails de l'équipement</div>
+      </div>
+    </div>
+  </ng-template>
+
   @if (selectedDevice) {
-    <div class="grid grid-cols-2 gap-4 text-sm">
-      <div>
-        <span class="font-semibold block text-gray-500">Hostname</span>
-        <span>{{ selectedDevice.hostname }}</span>
+    <div class="detail-grid">
+      <!-- Section Statut -->
+      <div class="detail-section-title mt-0">État & Identification</div>
+      
+      <div class="detail-item">
+        <span class="detail-label">Statut</span>
+        <div class="mt-1">
+          <p-tag [value]="selectedDevice.status" [severity]="statusSeverity(selectedDevice.status)" />
+        </div>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Statut</span>
-        <p-tag [value]="selectedDevice.status" [severity]="statusSeverity(selectedDevice.status)" />
+      
+      <div class="detail-item">
+        <span class="detail-label">Criticité</span>
+        <div class="mt-1">
+          @if (selectedDevice.criticality) {
+            <p-tag [value]="selectedDevice.criticality" [severity]="criticalitySeverity(selectedDevice.criticality)" />
+          } @else {
+            <span class="detail-value text-slate-400">Non définie</span>
+          }
+        </div>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Site</span>
-        <span>{{ selectedDevice.site?.nom || '-' }}</span>
+
+      <div class="detail-item">
+        <span class="detail-label">Serial Number</span>
+        <span class="detail-value font-mono">{{ selectedDevice.serialNumber || 'Non renseigné' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Rôle</span>
-        <span>{{ selectedDevice.deviceRole?.nom || '-' }}</span>
+
+      <div class="detail-item">
+        <span class="detail-label">IP Management</span>
+        <span class="detail-value font-mono">{{ selectedDevice.managementIp || 'Non renseigné' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Manufacturer</span>
-        <span>{{ selectedDevice.manufacturer?.nom || '-' }}</span>
+
+      <!-- Section Emplacement -->
+      <div class="detail-section-title">Emplacement & Classification</div>
+      
+      <div class="detail-item">
+        <span class="detail-label">Site</span>
+        <span class="detail-value flex items-center gap-2">
+          <i class="pi pi-building text-slate-400"></i>
+          {{ selectedDevice.site?.nom || '-' }}
+        </span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Model</span>
-        <span>{{ selectedDevice.model || '-' }}</span>
+      
+      <div class="detail-item">
+        <span class="detail-label">Rôle</span>
+        <span class="detail-value flex items-center gap-2">
+          <i class="pi pi-shield text-slate-400"></i>
+          {{ selectedDevice.deviceRole?.nom || '-' }}
+        </span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Serial Number</span>
-        <span>{{ selectedDevice.serialNumber || '-' }}</span>
+      
+      <div class="detail-item">
+        <span class="detail-label">Manufacturer</span>
+        <span class="detail-value flex items-center gap-2">
+          <i class="pi pi-cog text-slate-400"></i>
+          {{ selectedDevice.manufacturer?.nom || '-' }}
+        </span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">IP Management</span>
-        <span>{{ selectedDevice.managementIp || '-' }}</span>
+
+      <div class="detail-item">
+        <span class="detail-label">Model</span>
+        <span class="detail-value">{{ selectedDevice.model || '-' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">OS</span>
-        <span>{{ selectedDevice.os || '-' }}</span>
+
+      <div class="detail-item">
+        <span class="detail-label">Rack</span>
+        <span class="detail-value">{{ selectedDevice.rack || '-' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Version actuelle</span>
-        <span>{{ selectedDevice.currentVersion || '-' }}</span>
+
+      <div class="detail-item">
+        <span class="detail-label">Position Rack</span>
+        <span class="detail-value">{{ selectedDevice.rackPosition || '-' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Rack</span>
-        <span>{{ selectedDevice.rack || '-' }}</span>
+
+      <!-- Section Logiciel -->
+      <div class="detail-section-title">Logiciel & Gestion</div>
+
+      <div class="detail-item">
+        <span class="detail-label">OS</span>
+        <span class="detail-value">{{ selectedDevice.os || '-' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Position rack</span>
-        <span>{{ selectedDevice.rackPosition || '-' }}</span>
+
+      <div class="detail-item">
+        <span class="detail-label">Version actuelle</span>
+        <span class="detail-value">{{ selectedDevice.currentVersion || '-' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Criticité</span>
-        @if (selectedDevice.criticality) {
-          <p-tag [value]="selectedDevice.criticality" [severity]="criticalitySeverity(selectedDevice.criticality)" />
-        } @else {
-          <span>-</span>
-        }
+
+      <div class="detail-item">
+        <span class="detail-label">Owner</span>
+        <span class="detail-value">{{ selectedDevice.owner || '-' }}</span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Owner</span>
-        <span>{{ selectedDevice.owner || '-' }}</span>
+
+      <div class="detail-item">
+        <span class="detail-label">Dernière révision</span>
+        <span class="detail-value flex items-center gap-2">
+          <i class="pi pi-calendar text-slate-400" *ngIf="selectedDevice.lastReview"></i>
+          {{ selectedDevice.lastReview ? (selectedDevice.lastReview | date:'dd/MM/yyyy') : 'Jamais' }}
+        </span>
       </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Dernière révision</span>
-        <span>{{ selectedDevice.lastReview ? (selectedDevice.lastReview | date:'dd/MM/yyyy') : '-' }}</span>
-      </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Créé le</span>
-        <span>{{ selectedDevice.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
-      </div>
-      <div>
-        <span class="font-semibold block text-gray-500">Modifié le</span>
-        <span>{{ selectedDevice.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+      
+      <!-- Meta -->
+      <div class="col-span-2 mt-4 pt-4 border-t border-slate-100 flex justify-between text-xs text-slate-400">
+        <div>Créé le {{ selectedDevice.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+        <div>Modifié le {{ selectedDevice.updatedAt | date:'dd/MM/yyyy HH:mm' }}</div>
       </div>
     </div>
   }

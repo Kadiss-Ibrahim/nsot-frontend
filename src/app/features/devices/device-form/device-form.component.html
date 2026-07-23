@@ -1,131 +1,172 @@
-<div class="p-6 max-w-xl">
-  <h1 class="text-2xl font-bold mb-6">
-    {{ isEditMode ? 'Modifier' : 'Créer' }} un device
-  </h1>
-
-  @if (error) {
-  <p-message severity="error" [text]="error" styleClass="mb-4 w-full" />
-  }
-
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-    <div>
-      <label for="hostname" class="block text-sm font-medium mb-1">Hostname</label>
-      <input pInputText id="hostname" formControlName="hostname" class="w-full" />
-      @if (form.get('hostname')?.invalid && form.get('hostname')?.touched) {
-      <p class="text-red-600 text-sm mt-1">Le hostname est obligatoire (minimum 2 caractères)</p>
-      }
-    </div>
-
-    <div>
-      <label for="siteId" class="block text-sm font-medium mb-1">Site</label>
-      <select id="siteId" formControlName="siteId" class="w-full rounded border-gray-300 px-3 py-2">
-        <option [ngValue]="null">Sélectionner un site</option>
-        @for (site of sites; track site.id) {
-        <option [ngValue]="site.id">{{ site.nom }} - {{ site.ville }}</option>
-        }
-      </select>
-      @if (form.get('siteId')?.invalid && form.get('siteId')?.touched) {
-      <p class="text-red-600 text-sm mt-1">Le site est obligatoire</p>
-      }
-    </div>
-
-    <div>
-      <label for="deviceRoleId" class="block text-sm font-medium mb-1">Rôle</label>
-      <select id="deviceRoleId" formControlName="deviceRoleId" class="w-full rounded border-gray-300 px-3 py-2">
-        <option [ngValue]="null">Sélectionner un rôle</option>
-        @for (role of deviceRoles; track role.id) {
-        <option [ngValue]="role.id">{{ role.nom }}</option>
-        }
-      </select>
-      @if (form.get('deviceRoleId')?.invalid && form.get('deviceRoleId')?.touched) {
-      <p class="text-red-600 text-sm mt-1">Le rôle est obligatoire</p>
-      }
-    </div>
-
-    <div>
-      <label for="manufacturerId" class="block text-sm font-medium mb-1">Manufacturer</label>
-      <select id="manufacturerId" formControlName="manufacturerId" class="w-full rounded border-gray-300 px-3 py-2">
-        <option [ngValue]="null">Sélectionner un fabricant</option>
-        @for (manufacturer of manufacturers; track manufacturer.id) {
-        <option [ngValue]="manufacturer.id">{{ manufacturer.nom }}</option>
-        }
-      </select>
-      @if (form.get('manufacturerId')?.invalid && form.get('manufacturerId')?.touched) {
-      <p class="text-red-600 text-sm mt-1">Le fabricant est obligatoire</p>
-      }
-    </div>
-
-    <div>
-      <label for="status" class="block text-sm font-medium mb-1">Statut</label>
-      <select id="status" formControlName="status" class="w-full rounded border-gray-300 px-3 py-2">
-        @for (status of statusOptions; track status) {
-        <option [value]="status">{{ status }}</option>
-        }
-      </select>
-      @if (form.get('status')?.invalid && form.get('status')?.touched) {
-      <p class="text-red-600 text-sm mt-1">Le statut est obligatoire</p>
-      }
-    </div>
-
-    <div>
-      <label for="model" class="block text-sm font-medium mb-1">Modèle</label>
-      <input pInputText id="model" formControlName="model" class="w-full" />
-    </div>
-
-    <div>
-      <label for="serialNumber" class="block text-sm font-medium mb-1">Serial Number</label>
-      <input pInputText id="serialNumber" formControlName="serialNumber" class="w-full" />
-    </div>
-
-    <div>
-      <label for="managementIp" class="block text-sm font-medium mb-1">IP Management</label>
-      <input pInputText id="managementIp" formControlName="managementIp" class="w-full" />
-    </div>
-
-    <div>
-      <label for="os" class="block text-sm font-medium mb-1">OS</label>
-      <input pInputText id="os" formControlName="os" class="w-full" />
-    </div>
-
-    <div>
-      <label for="currentVersion" class="block text-sm font-medium mb-1">Version actuelle</label>
-      <input pInputText id="currentVersion" formControlName="currentVersion" class="w-full" />
-    </div>
-
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label for="rack" class="block text-sm font-medium mb-1">Rack</label>
-        <input pInputText id="rack" formControlName="rack" class="w-full" />
-      </div>
-      <div>
-        <label for="rackPosition" class="block text-sm font-medium mb-1">Position rack</label>
-        <input pInputText id="rackPosition" formControlName="rackPosition" class="w-full" />
+<div class="page-container">
+  <div class="form-card animate-fade-in-up" style="max-width: 800px;">
+    <div class="form-card-header">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-md bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
+          <i class="pi pi-server"></i>
+        </div>
+        <div>
+          <h1>{{ isEditMode ? 'Modifier le device' : 'Nouveau device' }}</h1>
+          <p>{{ isEditMode ? 'Mettez à jour les informations de cet équipement' : 'Ajoutez un nouvel équipement à votre inventaire' }}</p>
+        </div>
       </div>
     </div>
 
-    <div>
-      <label for="criticality" class="block text-sm font-medium mb-1">Criticité</label>
-      <select id="criticality" formControlName="criticality" class="w-full rounded border-gray-300 px-3 py-2">
-        <option [ngValue]="null">Non définie</option>
-        @for (level of criticalityOptions; track level) {
-        <option [value]="level">{{ level }}</option>
-        }
-      </select>
-    </div>
+    @if (error) {
+      <div class="px-7 pt-4">
+        <div class="error-banner mb-0">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ error }}</span>
+        </div>
+      </div>
+    }
 
-    <div>
-      <label for="owner" class="block text-sm font-medium mb-1">Owner</label>
-      <input pInputText id="owner" formControlName="owner" class="w-full" />
-    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-card-body space-y-6">
+        
+        <!-- Section: Informations générales -->
+        <div>
+          <div class="form-section-title">
+            <i class="pi pi-id-card"></i>
+            Informations générales
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group mb-0 md:col-span-2">
+              <label for="hostname">Hostname <span class="text-red-500">*</span></label>
+              <input pInputText id="hostname" formControlName="hostname" class="w-full" placeholder="Ex: SRV-WEB-01" />
+              @if (form.get('hostname')?.invalid && form.get('hostname')?.touched) {
+                <div class="form-error"><i class="pi pi-exclamation-circle"></i> Le hostname est obligatoire</div>
+              }
+            </div>
 
-    <div>
-      <label for="lastReview" class="block text-sm font-medium mb-1">Dernière révision</label>
-      <input pInputText type="date" id="lastReview" formControlName="lastReview" class="w-full" />
-    </div>
+            <div class="form-group mb-0">
+              <label for="manufacturerId">Fabricant <span class="text-red-500">*</span></label>
+              <select id="manufacturerId" formControlName="manufacturerId" class="form-select">
+                <option [ngValue]="null">Sélectionner un fabricant</option>
+                @for (manufacturer of manufacturers; track manufacturer.id) {
+                  <option [ngValue]="manufacturer.id">{{ manufacturer.nom }}</option>
+                }
+              </select>
+              @if (form.get('manufacturerId')?.invalid && form.get('manufacturerId')?.touched) {
+                <div class="form-error"><i class="pi pi-exclamation-circle"></i> Requis</div>
+              }
+            </div>
 
-    <div class="flex gap-2 pt-2">
-      <p-button type="submit" label="Enregistrer" [loading]="loading" [disabled]="form.invalid" />
-      <p-button type="button" label="Annuler" severity="secondary" (onClick)="onCancel()" />
-    </div>
-  </form>
+            <div class="form-group mb-0">
+              <label for="model">Modèle</label>
+              <input pInputText id="model" formControlName="model" class="w-full" placeholder="Ex: Catalyst 9300" />
+            </div>
+
+            <div class="form-group mb-0 md:col-span-2">
+              <label for="serialNumber">Serial Number</label>
+              <input pInputText id="serialNumber" formControlName="serialNumber" class="w-full font-mono text-sm" placeholder="Ex: FOC2342XXXX" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Emplacement & Rôle -->
+        <div>
+          <div class="form-section-title">
+            <i class="pi pi-map-marker"></i>
+            Emplacement & Rôle
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group mb-0">
+              <label for="siteId">Site <span class="text-red-500">*</span></label>
+              <select id="siteId" formControlName="siteId" class="form-select">
+                <option [ngValue]="null">Sélectionner un site</option>
+                @for (site of sites; track site.id) {
+                  <option [ngValue]="site.id">{{ site.nom }} - {{ site.ville }}</option>
+                }
+              </select>
+              @if (form.get('siteId')?.invalid && form.get('siteId')?.touched) {
+                <div class="form-error"><i class="pi pi-exclamation-circle"></i> Requis</div>
+              }
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="deviceRoleId">Rôle <span class="text-red-500">*</span></label>
+              <select id="deviceRoleId" formControlName="deviceRoleId" class="form-select">
+                <option [ngValue]="null">Sélectionner un rôle</option>
+                @for (role of deviceRoles; track role.id) {
+                  <option [ngValue]="role.id">{{ role.nom }}</option>
+                }
+              </select>
+              @if (form.get('deviceRoleId')?.invalid && form.get('deviceRoleId')?.touched) {
+                <div class="form-error"><i class="pi pi-exclamation-circle"></i> Requis</div>
+              }
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="rack">Rack</label>
+              <input pInputText id="rack" formControlName="rack" class="w-full" placeholder="Ex: R01-A" />
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="rackPosition">Position dans le rack</label>
+              <input pInputText id="rackPosition" formControlName="rackPosition" class="w-full" placeholder="Ex: U42" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Technique & Gestion -->
+        <div>
+          <div class="form-section-title">
+            <i class="pi pi-cog"></i>
+            Technique & Gestion
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group mb-0">
+              <label for="managementIp">IP Management</label>
+              <input pInputText id="managementIp" formControlName="managementIp" class="w-full font-mono text-sm" placeholder="Ex: 192.168.1.10" />
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="status">Statut <span class="text-red-500">*</span></label>
+              <select id="status" formControlName="status" class="form-select">
+                @for (status of statusOptions; track status) {
+                  <option [value]="status">{{ status }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="os">Système d'exploitation (OS)</label>
+              <input pInputText id="os" formControlName="os" class="w-full" placeholder="Ex: IOS-XE" />
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="currentVersion">Version actuelle</label>
+              <input pInputText id="currentVersion" formControlName="currentVersion" class="w-full font-mono text-sm" placeholder="Ex: 17.3.2" />
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="criticality">Criticité</label>
+              <select id="criticality" formControlName="criticality" class="form-select">
+                <option [ngValue]="null">Non définie</option>
+                @for (level of criticalityOptions; track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group mb-0">
+              <label for="owner">Propriétaire / Owner</label>
+              <input pInputText id="owner" formControlName="owner" class="w-full" placeholder="Ex: Équipe Réseau" />
+            </div>
+
+            <div class="form-group mb-0 md:col-span-2">
+              <label for="lastReview">Date de dernière révision</label>
+              <input pInputText type="date" id="lastReview" formControlName="lastReview" class="w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card-footer">
+        <p-button type="button" label="Annuler" severity="secondary" [text]="true" (onClick)="onCancel()" />
+        <p-button type="submit" label="Enregistrer l'équipement" icon="pi pi-check" [loading]="loading" [disabled]="form.invalid" />
+      </div>
+    </form>
+  </div>
 </div>

@@ -1,46 +1,71 @@
-<div class="p-6 max-w-md">
-  <h1 class="text-2xl font-bold mb-6">
-    {{ isEditMode ? 'Modifier' : 'Créer' }} un utilisateur
-  </h1>
-
-  @if (error) {
-    <p-message severity="error" [text]="error" styleClass="mb-4 w-full" />
-  }
-
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-    <div>
-      <label for="username" class="block text-sm font-medium mb-1">Username</label>
-      <input pInputText id="username" formControlName="username" class="w-full" />
-      @if (form.get('username')?.invalid && form.get('username')?.touched) {
-        <p class="text-red-600 text-sm mt-1">Le nom d'utilisateur est obligatoire (minimum 3 caractères)</p>
-      }
+<div class="page-container">
+  <div class="form-card animate-fade-in-up">
+    <div class="form-card-header">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-md bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
+          <i class="pi pi-user"></i>
+        </div>
+        <div>
+          <h1>{{ isEditMode ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}</h1>
+          <p>{{ isEditMode ? 'Gérez les accès de cet utilisateur' : 'Ajoutez un nouveau compte d\'accès à NSoT' }}</p>
+        </div>
+      </div>
     </div>
 
-    <div>
-      <label for="password" class="block text-sm font-medium mb-1">Mot de passe</label>
-      <input pInputText id="password" type="password" formControlName="password" class="w-full" />
-      @if (isEditMode) {
-        <p class="text-sm text-slate-500 mt-1">Laisser vide pour conserver le mot de passe actuel</p>
-      }
-      @if (form.get('password')?.invalid && form.get('password')?.touched) {
-        <p class="text-red-600 text-sm mt-1">Le mot de passe doit contenir au moins 6 caractères</p>
-      }
-    </div>
+    @if (error) {
+      <div class="px-7 pt-4">
+        <div class="error-banner mb-0">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ error }}</span>
+        </div>
+      </div>
+    }
 
-    <div>
-      <label for="role" class="block text-sm font-medium mb-1">Rôle</label>
-      <select id="role" formControlName="role" class="w-full rounded border-gray-300 px-3 py-2">
-        <option value="ADMIN">ADMIN</option>
-        <option value="READONLY">READONLY</option>
-      </select>
-      @if (form.get('role')?.invalid && form.get('role')?.touched) {
-        <p class="text-red-600 text-sm mt-1">Le rôle est obligatoire</p>
-      }
-    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-card-body space-y-6">
+        
+        <div class="form-group mb-0">
+          <label for="username">Nom d'utilisateur <span class="text-red-500">*</span></label>
+          <div class="p-input-icon-left w-full">
+            <i class="pi pi-user text-slate-400"></i>
+            <input pInputText id="username" formControlName="username" class="w-full pl-10" placeholder="Ex: jdupont" />
+          </div>
+          @if (form.get('username')?.invalid && form.get('username')?.touched) {
+            <div class="form-error"><i class="pi pi-exclamation-circle"></i> Le nom d'utilisateur est obligatoire (min. 3 caractères)</div>
+          }
+        </div>
 
-    <div class="flex gap-2 pt-2">
-      <p-button type="submit" label="Enregistrer" [loading]="loading" [disabled]="form.invalid" />
-      <p-button type="button" label="Annuler" severity="secondary" (onClick)="onCancel()" />
-    </div>
-  </form>
+        <div class="form-group mb-0">
+          <label for="password">Mot de passe <span *ngIf="!isEditMode" class="text-red-500">*</span></label>
+          <div class="p-input-icon-left w-full">
+            <i class="pi pi-lock text-slate-400"></i>
+            <input pInputText id="password" type="password" formControlName="password" class="w-full pl-10" placeholder="••••••••" />
+          </div>
+          @if (isEditMode) {
+            <div class="form-hint">Laissez vide pour conserver le mot de passe actuel.</div>
+          }
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <div class="form-error"><i class="pi pi-exclamation-circle"></i> Le mot de passe doit contenir au moins 6 caractères</div>
+          }
+        </div>
+
+        <div class="form-group mb-0">
+          <label for="role">Rôle système <span class="text-red-500">*</span></label>
+          <select id="role" formControlName="role" class="form-select">
+            <option value="READONLY">READONLY - Accès en lecture seule</option>
+            <option value="ADMIN">ADMIN - Accès complet en écriture</option>
+          </select>
+          @if (form.get('role')?.invalid && form.get('role')?.touched) {
+            <div class="form-error"><i class="pi pi-exclamation-circle"></i> Le rôle est obligatoire</div>
+          }
+        </div>
+
+      </div>
+
+      <div class="form-card-footer">
+        <p-button type="button" label="Annuler" severity="secondary" [text]="true" (onClick)="onCancel()" />
+        <p-button type="submit" label="Enregistrer l'utilisateur" icon="pi pi-check" [loading]="loading" [disabled]="form.invalid" />
+      </div>
+    </form>
+  </div>
 </div>

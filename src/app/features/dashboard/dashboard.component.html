@@ -1,62 +1,122 @@
-<div class="p-6">
-  <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>
+        <div class="header-icon bg-indigo-100 text-indigo-600">
+          <i class="pi pi-objects-column"></i>
+        </div>
+        Dashboard
+      </h1>
+      <p class="page-subtitle">Vue d'ensemble de votre infrastructure réseau</p>
+    </div>
+    <div class="page-header-actions text-sm text-slate-500 font-medium bg-white px-3 py-1.5 rounded-md border border-slate-200 shadow-sm">
+      <i class="pi pi-calendar mr-2 text-indigo-500"></i>
+      {{ currentDate | date:'longDate' }}
+    </div>
+  </div>
 
   @if (error) {
-    <p class="text-red-600 mb-4">{{ error }}</p>
+    <div class="error-banner">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>{{ error }}</span>
+      <button class="ml-auto bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded text-xs font-semibold transition-colors" (click)="ngOnInit()">Réessayer</button>
+    </div>
   }
 
   @if (loading) {
-    <p class="text-gray-500">Chargement...</p>
+    <!-- KPI Skeletons -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="skeleton skeleton-card"></div>
+      }
+    </div>
+    <!-- Chart Skeletons -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="skeleton" style="height: 350px;"></div>
+      }
+    </div>
   }
 
   @if (stats) {
     <!-- KPI Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-      <div class="bg-white rounded-lg shadow p-4 text-center">
-        <p class="text-3xl font-bold text-slate-900">{{ stats.totalDevices }}</p>
-        <p class="text-sm text-gray-500 mt-1">Total Devices</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+      <div class="kpi-card kpi-primary animate-fade-in-up delay-1">
+        <div class="kpi-icon"><i class="pi pi-server"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ stats.totalDevices }}</div>
+          <div class="kpi-label">Total Devices</div>
+        </div>
       </div>
-      <div class="bg-white rounded-lg shadow p-4 text-center">
-        <p class="text-3xl font-bold text-green-600">{{ stats.productionCount }}</p>
-        <p class="text-sm text-gray-500 mt-1">Production</p>
+      <div class="kpi-card kpi-success animate-fade-in-up delay-2">
+        <div class="kpi-icon"><i class="pi pi-check-circle"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ stats.productionCount }}</div>
+          <div class="kpi-label">Production</div>
+        </div>
       </div>
-      <div class="bg-white rounded-lg shadow p-4 text-center">
-        <p class="text-3xl font-bold text-amber-500">{{ stats.standbyCount }}</p>
-        <p class="text-sm text-gray-500 mt-1">Standby</p>
+      <div class="kpi-card kpi-warning animate-fade-in-up delay-3">
+        <div class="kpi-icon"><i class="pi pi-pause-circle"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ stats.standbyCount }}</div>
+          <div class="kpi-label">Standby</div>
+        </div>
       </div>
-      <div class="bg-white rounded-lg shadow p-4 text-center">
-        <p class="text-3xl font-bold text-red-600">{{ stats.criticalCount }}</p>
-        <p class="text-sm text-gray-500 mt-1">Critical</p>
+      <div class="kpi-card kpi-danger animate-fade-in-up delay-4">
+        <div class="kpi-icon"><i class="pi pi-exclamation-circle"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ stats.criticalCount }}</div>
+          <div class="kpi-label">Critical</div>
+        </div>
       </div>
-      <div class="bg-white rounded-lg shadow p-4 text-center">
-        <p class="text-3xl font-bold text-blue-600">{{ stats.totalSites }}</p>
-        <p class="text-sm text-gray-500 mt-1">Sites</p>
+      <div class="kpi-card kpi-info animate-fade-in-up delay-5">
+        <div class="kpi-icon"><i class="pi pi-building"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ stats.totalSites }}</div>
+          <div class="kpi-label">Total Sites</div>
+        </div>
       </div>
-      <div class="bg-white rounded-lg shadow p-4 text-center">
-        <p class="text-3xl font-bold text-purple-600">{{ stats.totalManufacturers }}</p>
-        <p class="text-sm text-gray-500 mt-1">Manufacturers</p>
+      <div class="kpi-card kpi-purple animate-fade-in-up delay-6">
+        <div class="kpi-icon"><i class="pi pi-cog"></i></div>
+        <div class="kpi-content">
+          <div class="kpi-value">{{ stats.totalManufacturers }}</div>
+          <div class="kpi-label">Manufacturers</div>
+        </div>
       </div>
     </div>
 
     <!-- Graphiques -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-white rounded-lg shadow p-4">
-        <h2 class="font-semibold mb-3">Devices par Statut</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in-up" style="animation-delay: 0.35s;">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <i class="pi pi-chart-pie"></i>
+          <h2>Devices par Statut</h2>
+        </div>
         <p-chart type="doughnut" [data]="statusChartData" [options]="statusChartOptions" [style]="{ height: '280px' }" />
       </div>
 
-      <div class="bg-white rounded-lg shadow p-4">
-        <h2 class="font-semibold mb-3">Devices par Site</h2>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <i class="pi pi-building"></i>
+          <h2>Devices par Site</h2>
+        </div>
         <p-chart type="bar" [data]="siteChartData" [options]="barChartOptions" [style]="{ height: '280px' }" />
       </div>
 
-      <div class="bg-white rounded-lg shadow p-4">
-        <h2 class="font-semibold mb-3">Devices par Manufacturer</h2>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <i class="pi pi-cog"></i>
+          <h2>Devices par Manufacturer</h2>
+        </div>
         <p-chart type="bar" [data]="manufacturerChartData" [options]="barChartOptions" [style]="{ height: '280px' }" />
       </div>
 
-      <div class="bg-white rounded-lg shadow p-4">
-        <h2 class="font-semibold mb-3">Devices par Rôle</h2>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <i class="pi pi-shield"></i>
+          <h2>Devices par Rôle</h2>
+        </div>
         <p-chart type="bar" [data]="roleChartData" [options]="barChartOptions" [style]="{ height: '280px' }" />
       </div>
     </div>

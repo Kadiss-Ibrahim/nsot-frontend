@@ -23,6 +23,8 @@ export class DashboardComponent implements OnInit {
   manufacturerChartData: unknown;
   roleChartData: unknown;
   barChartOptions: unknown;
+  
+  currentDate = new Date();
 
   ngOnInit(): void {
     this.dashboardService.getStats().subscribe({

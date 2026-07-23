@@ -40,4 +40,9 @@ export class LayoutComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  getInitial(): string {
+    const username = this.getUsername();
+    return username ? username.charAt(0).toUpperCase() : 'U';
+  }
 }

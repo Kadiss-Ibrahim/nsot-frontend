@@ -1,63 +1,110 @@
-<div class="p-6">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold">Sites</h1>
-    @if (isAdmin()) {
-      <p-button label="Nouveau" icon="pi pi-plus" routerLink="/sites/new" />
-    }
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>
+        <div class="header-icon bg-indigo-100 text-indigo-600">
+          <i class="pi pi-building"></i>
+        </div>
+        Sites
+        <span class="result-count ml-2" *ngIf="!loading">{{ sites.length }}</span>
+      </h1>
+      <p class="page-subtitle">Gérez les emplacements physiques de votre réseau</p>
+    </div>
+    <div class="page-header-actions">
+      @if (isAdmin()) {
+        <p-button label="Nouveau Site" icon="pi pi-plus" routerLink="/sites/new" />
+      }
+    </div>
   </div>
 
   @if (error) {
-    <p class="text-red-600 mb-4">{{ error }}</p>
+    <div class="error-banner">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>{{ error }}</span>
+    </div>
   }
 
-  <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
-    <div class="flex-1 min-w-[160px]">
-      <label for="search-site-nom" class="block text-sm font-medium mb-1">Nom</label>
-      <input pInputText id="search-site-nom" [(ngModel)]="searchNom" (ngModelChange)="onFilterChange()" placeholder="Nom du site..." class="w-full" />
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label for="search-site-nom">Nom du site</label>
+      <div class="p-input-icon-left w-full">
+        <i class="pi pi-search"></i>
+        <input pInputText id="search-site-nom" [(ngModel)]="searchNom" (ngModelChange)="onFilterChange()" placeholder="Ex: Paris-HQ..." class="w-full" />
+      </div>
     </div>
-    <div class="flex-1 min-w-[160px]">
-      <label for="search-site-ville" class="block text-sm font-medium mb-1">Ville</label>
-      <input pInputText id="search-site-ville" [(ngModel)]="searchVille" (ngModelChange)="onFilterChange()" placeholder="Ville..." class="w-full" />
+    
+    <div class="filter-field">
+      <label for="search-site-ville">Ville</label>
+      <div class="p-input-icon-left w-full">
+        <i class="pi pi-map-marker"></i>
+        <input pInputText id="search-site-ville" [(ngModel)]="searchVille" (ngModelChange)="onFilterChange()" placeholder="Ex: Paris..." class="w-full" />
+      </div>
     </div>
+    
     @if (hasActiveFilters()) {
-      <div class="flex gap-2">
-        <p-button label="Réinitialiser" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="resetSearch()" />
+      <div>
+        <p-button label="Effacer" icon="pi pi-filter-slash" severity="secondary" [text]="true" (onClick)="resetSearch()" />
       </div>
     }
   </div>
 
-  <p-table [value]="sites" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-sm">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Nom</th>
-        <th>Ville</th>
-        <th>Pays</th>
-        <th>Responsable</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
+  <!-- Table Card -->
+  <div class="card-elevated animate-fade-in-up delay-1">
+    <p-table [value]="sites" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-striped p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Affichage {first} à {last} sur {totalRecords} sites">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom</th>
+          <th>Ville</th>
+          <th>Pays</th>
+          <th>Responsable</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="body" let-site>
-      <tr>
-        <td>{{ site.nom }}</td>
-        <td>{{ site.ville }}</td>
-        <td>{{ site.pays }}</td>
-        <td>{{ site.responsable || '-' }}</td>
-        <td>
-          <div class="flex gap-1">
-            @if (isAdmin()) {
-              <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [routerLink]="['/sites', site.id, 'edit']" />
-              <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true" (onClick)="confirmDelete(site)" />
+      <ng-template pTemplate="body" let-site>
+        <tr>
+          <td class="font-semibold text-slate-900">{{ site.nom }}</td>
+          <td>{{ site.ville }}</td>
+          <td>{{ site.pays }}</td>
+          <td>
+            @if (site.responsable) {
+              <span class="flex items-center gap-2">
+                <i class="pi pi-user text-slate-400"></i>
+                {{ site.responsable }}
+              </span>
+            } @else {
+              <span class="text-slate-400 italic">Non assigné</span>
             }
-          </div>
-        </td>
-      </tr>
-    </ng-template>
+          </td>
+          <td>
+            <div class="flex gap-1 justify-end">
+              @if (isAdmin()) {
+                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" pTooltip="Modifier" tooltipPosition="top" [routerLink]="['/sites', site.id, 'edit']" />
+                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Supprimer" tooltipPosition="top" (onClick)="confirmDelete(site)" />
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
 
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="5" class="text-center text-gray-500">Aucun site trouvé</td>
-      </tr>
-    </ng-template>
-  </p-table>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i class="pi pi-building"></i>
+              </div>
+              <div class="empty-state-title">Aucun site trouvé</div>
+              <p class="empty-state-text">Nous n'avons trouvé aucun site correspondant à vos critères de recherche.</p>
+              @if (isAdmin()) {
+                <p-button label="Ajouter un site" icon="pi pi-plus" [routerLink]="['/sites/new']" />
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
