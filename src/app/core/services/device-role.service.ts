@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DeviceRoleRequest, DeviceRoleResponse } from '../models/device-role.model';
 
@@ -29,4 +29,10 @@ export class DeviceRoleService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
-}
+
+  search(nom?: string): Observable<DeviceRoleResponse[]> {
+    let params = new HttpParams();
+    if (nom) params = params.set('nom', nom);
+    return this.http.get<DeviceRoleResponse[]>(`${this.baseUrl}/search`, { params });
+  }
+}

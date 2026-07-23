@@ -1,0 +1,41 @@
+<div class="p-6 max-w-md">
+  <h1 class="text-2xl font-bold mb-6">
+    {{ isEditMode ? 'Modifier' : 'Créer' }} un rôle de device
+  </h1>
+
+  @if (error) {
+    <p-message severity="error" [text]="error" styleClass="mb-4 w-full" />
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label for="nom" class="block text-sm font-medium mb-1">Nom</label>
+      <input
+        pInputText
+        id="nom"
+        formControlName="nom"
+        class="w-full"
+      />
+      @if (form.get('nom')?.invalid && form.get('nom')?.touched) {
+        <p class="text-red-600 text-sm mt-1">
+          Le nom est obligatoire (minimum 2 caractères)
+        </p>
+      }
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <p-button
+        type="submit"
+        label="Enregistrer"
+        [loading]="loading"
+        [disabled]="form.invalid"
+      />
+      <p-button
+        type="button"
+        label="Annuler"
+        severity="secondary"
+        (onClick)="onCancel()"
+      />
+    </div>
+  </form>
+</div>

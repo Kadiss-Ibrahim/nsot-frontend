@@ -1,12 +1,16 @@
-<div class="min-h-screen flex bg-gray-100">
-
+<div class="h-screen flex overflow-hidden bg-gray-100">
   <!-- Sidebar -->
-  <aside class="w-64 bg-slate-900 text-white flex flex-col">
+  <aside class="w-64 bg-slate-900 text-white flex flex-col h-screen shrink-0">
     <div class="p-6 text-xl font-bold border-b border-slate-700">
       NSoT
     </div>
 
     <nav class="flex-1 p-4 space-y-1">
+      <a routerLink="/dashboard"
+         routerLinkActive="bg-slate-700"
+         class="block px-4 py-2 rounded hover:bg-slate-800 transition">
+        Dashboard
+      </a>
       <a routerLink="/devices"
          routerLinkActive="bg-slate-700"
          class="block px-4 py-2 rounded hover:bg-slate-800 transition">
@@ -27,16 +31,35 @@
          class="block px-4 py-2 rounded hover:bg-slate-800 transition">
         Device Roles
       </a>
-      <a routerLink="/users"
-         routerLinkActive="bg-slate-700"
-         class="block px-4 py-2 rounded hover:bg-slate-800 transition">
-        Users
-      </a>
+
+      @if (isAdmin()) {
+        <a routerLink="/users"
+           routerLinkActive="bg-slate-700"
+           class="block px-4 py-2 rounded hover:bg-slate-800 transition">
+          Users
+        </a>
+      }
     </nav>
+
+    <!-- Footer sidebar : utilisateur + déconnexion -->
+    <div class="p-4 border-t border-slate-700 mt-auto">
+      @if (getUsername()) {
+        <p class="text-sm text-slate-400 mb-2 truncate">
+          Connecté : <span class="text-white font-medium">{{ getUsername() }}</span>
+        </p>
+      }
+      <button
+        (click)="confirmLogout()"
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded bg-slate-800 hover:bg-red-600 transition text-sm"
+      >
+        <i class="pi pi-sign-out"></i>
+        Déconnexion
+      </button>
+    </div>
   </aside>
 
   <!-- Contenu principal -->
-  <main class="flex-1 overflow-y-auto">
+  <main class="flex-1 overflow-y-auto min-w-0">
     <router-outlet></router-outlet>
   </main>
 

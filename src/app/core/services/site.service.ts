@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SiteRequest, SiteResponse } from '../models/site.model';
 
@@ -29,4 +29,11 @@ export class SiteService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
-}
+
+  search(nom?: string, ville?: string): Observable<SiteResponse[]> {
+    let params = new HttpParams();
+    if (nom) params = params.set('nom', nom);
+    if (ville) params = params.set('ville', ville);
+    return this.http.get<SiteResponse[]>(`${this.baseUrl}/search`, { params });
+  }
+}

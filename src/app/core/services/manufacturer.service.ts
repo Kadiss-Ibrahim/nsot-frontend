@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ManufacturerRequest, ManufacturerResponse } from '../models/manufacturer.model';
 
@@ -17,7 +17,6 @@ export class ManufacturerService {
   findById(id: number): Observable<ManufacturerResponse> {
     return this.http.get<ManufacturerResponse>(`${this.baseUrl}/${id}`);
   }
-  
 
   create(dto: ManufacturerRequest): Observable<ManufacturerResponse> {
     return this.http.post<ManufacturerResponse>(this.baseUrl, dto);
@@ -29,5 +28,13 @@ export class ManufacturerService {
 
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  search(nom?: string): Observable<ManufacturerResponse[]> {
+    let params = new HttpParams();
+    if (nom) {
+      params = params.set('nom', nom);
+    }
+    return this.http.get<ManufacturerResponse[]>(`${this.baseUrl}/search`, { params });
   }
 }
