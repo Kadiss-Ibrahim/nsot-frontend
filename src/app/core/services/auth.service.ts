@@ -17,20 +17,38 @@ export class AuthService {
   private baseUrl = 'http://localhost:8080/api/v1/auth';
   private tokenKey = 'nsot_token';
   private http = inject(HttpClient);
+  private refreshTokenKey = 'nsot_refresh_token';
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, credentials).pipe(
-      tap(response => {
-        if (response.token) {
-          localStorage.setItem(this.tokenKey, response.token);
-        }
-      })
-    );
-  }
+login(credentials: LoginRequest): Observable<LoginResponse> {
+  return this.http.post<LoginResponse>(`${this.baseUrl}/login`, credentials).pipe(
+    tap(response => {
+      if (response.token) {
+        localStorage.setItem(this.tokenKey, response.token);
+        localStorage.setItem(this.refreshTokenKey, response.refreshToken);
+      }
+    })
+  );
+}
 
-  logout(): void {
-    localStorage.removeItem(this.tokenKey);
-  }
+logout(): void {
+  localStorage.removeItem(this.tokenKey);
+  localStorage.removeItem(this.refreshTokenKey);
+}
+
+getRefreshToken(): string | null {
+  return localStorage.getItem(this.refreshTokenKey);
+}
+
+refreshAccessToken(): Observable<LoginResponse> {
+  const refreshToken = this.getRefreshToken();
+  return this.http.post<LoginResponse>(`${this.baseUrl}/refresh`, { refreshToken }).pipe(
+    tap(response => {
+      if (response.token) {
+        localStorage.setItem(this.tokenKey, response.token);
+      }
+    })
+  );
+}
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
