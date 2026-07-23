@@ -12,12 +12,12 @@
 
   <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Nom</label>
-      <input pInputText [(ngModel)]="searchNom" (ngModelChange)="onFilterChange()" placeholder="Nom du site..." class="w-full" />
+      <label for="search-site-nom" class="block text-sm font-medium mb-1">Nom</label>
+      <input pInputText id="search-site-nom" [(ngModel)]="searchNom" (ngModelChange)="onFilterChange()" placeholder="Nom du site..." class="w-full" />
     </div>
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Ville</label>
-      <input pInputText [(ngModel)]="searchVille" (ngModelChange)="onFilterChange()" placeholder="Ville..." class="w-full" />
+      <label for="search-site-ville" class="block text-sm font-medium mb-1">Ville</label>
+      <input pInputText id="search-site-ville" [(ngModel)]="searchVille" (ngModelChange)="onFilterChange()" placeholder="Ville..." class="w-full" />
     </div>
     @if (hasActiveFilters()) {
       <div class="flex gap-2">

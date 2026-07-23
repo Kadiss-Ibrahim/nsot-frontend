@@ -9,7 +9,7 @@ import { DeviceService } from '../../../core/services/device.service';
 import { ManufacturerService } from '../../../core/services/manufacturer.service';
 import { SiteService } from '../../../core/services/site.service';
 import { DeviceRoleService } from '../../../core/services/device-role.service';
-import { Criticality, DeviceRequest, DeviceResponse, DeviceStatus } from '../../../core/models/device.model';
+import { Criticality, DeviceRequest, DeviceStatus } from '../../../core/models/device.model';
 import { SiteResponse } from '../../../core/models/site.model';
 import { ManufacturerResponse } from '../../../core/models/manufacturer.model';
 import { DeviceRoleResponse } from '../../../core/models/device-role.model';

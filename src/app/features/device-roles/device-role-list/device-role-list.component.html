@@ -12,8 +12,8 @@
 
   <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
     <div class="flex-1 min-w-[200px]">
-      <label class="block text-sm font-medium mb-1">Nom</label>
-      <input pInputText [(ngModel)]="searchNom" (ngModelChange)="onFilterChange()" placeholder="Rechercher par nom..." class="w-full" />
+      <label for="search-role-nom" class="block text-sm font-medium mb-1">Nom</label>
+      <input pInputText id="search-role-nom" [(ngModel)]="searchNom" (ngModelChange)="onFilterChange()" placeholder="Rechercher par nom..." class="w-full" />
     </div>
     @if (hasActiveFilters()) {
       <div class="flex gap-2">

@@ -11,28 +11,29 @@
 
   <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Hostname</label>
-      <input pInputText [(ngModel)]="searchHostname" (ngModelChange)="onFilterChange()" placeholder="Hostname..." class="w-full" />
+      <label for="search-hostname" class="block text-sm font-medium mb-1">Hostname</label>
+      <input pInputText id="search-hostname" [(ngModel)]="searchHostname" (ngModelChange)="onFilterChange()" placeholder="Hostname..." class="w-full" />
     </div>
 
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Adresse IP</label>
-      <input pInputText [(ngModel)]="searchManagementIp" (ngModelChange)="onFilterChange()" placeholder="IP..." class="w-full" />
+      <label for="search-ip" class="block text-sm font-medium mb-1">Adresse IP</label>
+      <input pInputText id="search-ip" [(ngModel)]="searchManagementIp" (ngModelChange)="onFilterChange()" placeholder="IP..." class="w-full" />
     </div>
 
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Numéro de série</label>
-      <input pInputText [(ngModel)]="searchSerialNumber" (ngModelChange)="onFilterChange()" placeholder="Serial..." class="w-full" />
+      <label for="search-serial" class="block text-sm font-medium mb-1">Numéro de série</label>
+      <input pInputText id="search-serial" [(ngModel)]="searchSerialNumber" (ngModelChange)="onFilterChange()" placeholder="Serial..." class="w-full" />
     </div>
 
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Modèle</label>
-      <input pInputText [(ngModel)]="searchModel" (ngModelChange)="onFilterChange()" placeholder="Modèle..." class="w-full" />
+      <label for="search-model" class="block text-sm font-medium mb-1">Modèle</label>
+      <input pInputText id="search-model" [(ngModel)]="searchModel" (ngModelChange)="onFilterChange()" placeholder="Modèle..." class="w-full" />
     </div>
 
     <div class="min-w-[200px]">
-      <label class="block text-sm font-medium mb-1">Site</label>
+      <label for="search-site" class="block text-sm font-medium mb-1">Site</label>
       <p-select
+        id="search-site"
         [(ngModel)]="searchSiteId"
         (ngModelChange)="onFilterChange()"
         [options]="sites"
@@ -45,8 +46,9 @@
     </div>
 
     <div class="min-w-[180px]">
-      <label class="block text-sm font-medium mb-1">Statut</label>
-      <p-select
+      <label for="search-status" class="block text-sm font-medium mb-1">Statut</label>
+      <p-select 
+        id="search-status"
         [(ngModel)]="searchStatus"
         (ngModelChange)="onFilterChange()"
         [options]="statusOptions"

@@ -10,12 +10,13 @@
 
   <div class="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-3 items-end">
     <div class="flex-1 min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Username</label>
-      <input pInputText [(ngModel)]="searchUsername" (ngModelChange)="onFilterChange()" placeholder="Rechercher par username..." class="w-full" />
+      <label for="search-user-username" class="block text-sm font-medium mb-1">Username</label>
+      <input pInputText id="search-user-username" [(ngModel)]="searchUsername" (ngModelChange)="onFilterChange()" placeholder="Rechercher par username..." class="w-full" />
     </div>
     <div class="min-w-[160px]">
-      <label class="block text-sm font-medium mb-1">Rôle</label>
+      <label for="search-user-role" class="block text-sm font-medium mb-1">Rôle</label>
       <p-select
+        id="search-user-role"
         [(ngModel)]="searchRole"
         (ngModelChange)="onFilterChange()"
         [options]="roleOptions"
