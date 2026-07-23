@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { UserService } from '../../../core/services/user.service';
-import { UserRequest, UserResponse, UserRole } from '../../../core/models/user.model';
+import { UserRequest, UserRole } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-user-form',
