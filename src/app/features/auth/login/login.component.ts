@@ -23,7 +23,7 @@ export class LoginComponent {
     const router = this.router;
     authService.login({ username: this.username, password: this.password }).subscribe({
       next: () => {
-        router.navigate(['/manufacturers']);
+        router.navigate(['/dashboard']);
       },
       error: () => {
         this.error = 'Identifiants incorrects';

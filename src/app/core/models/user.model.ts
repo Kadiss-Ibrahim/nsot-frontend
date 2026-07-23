@@ -11,4 +11,5 @@ export interface UserResponse {
   username: string;
   role: UserRole;
   createdAt: string;
+  isProtected: boolean;
 }

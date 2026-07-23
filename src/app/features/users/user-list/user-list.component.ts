@@ -10,11 +10,12 @@ import { UserService } from '../../../core/services/user.service';
 import { UserResponse, UserRole } from '../../../core/models/user.model';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subject, Subscription, debounceTime } from 'rxjs';
+import { Tag } from "primeng/tag";
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule, SelectModule, RouterLink],
+  imports: [CommonModule, FormsModule, TableModule, ButtonModule, InputTextModule, SelectModule, RouterLink, Tag],
   templateUrl: './user-list.component.html'
 })
 export class UserListComponent implements OnInit, OnDestroy {
@@ -117,4 +118,4 @@ export class UserListComponent implements OnInit, OnDestroy {
       }
     });
   }
-}
+}
