@@ -17,13 +17,12 @@ export class DashboardComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  statusChartData: any;
-  statusChartOptions: any;
-
-  siteChartData: any;
-  manufacturerChartData: any;
-  roleChartData: any;
-  barChartOptions: any;
+  statusChartData: unknown;
+  statusChartOptions: unknown;
+  siteChartData: unknown;
+  manufacturerChartData: unknown;
+  roleChartData: unknown;
+  barChartOptions: unknown;
 
   ngOnInit(): void {
     this.dashboardService.getStats().subscribe({
