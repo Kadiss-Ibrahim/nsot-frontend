@@ -7,7 +7,9 @@
           <i class="pi pi-building"></i>
         </div>
         Sites
-        <span class="result-count ml-2" *ngIf="!loading">{{ sites.length }}</span>
+        @if (!loading) {
+          <span class="result-count ml-2">{{ sites.length }}</span>
+        }
       </h1>
       <p class="page-subtitle">Gérez les emplacements physiques de votre réseau</p>
     </div>

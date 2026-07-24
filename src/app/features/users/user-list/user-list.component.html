@@ -7,7 +7,9 @@
           <i class="pi pi-users"></i>
         </div>
         Utilisateurs
-        <span class="result-count ml-2" *ngIf="!loading">{{ users.length }}</span>
+        @if (!loading) {
+          <span class="result-count ml-2">{{ users.length }}</span>
+        }
       </h1>
       <p class="page-subtitle">Gérez les accès à la plateforme NSoT</p>
     </div>

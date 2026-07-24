@@ -7,7 +7,9 @@
           <i class="pi pi-server"></i>
         </div>
         Devices
-        <span class="result-count ml-2" *ngIf="!loading">{{ devices.length }}</span>
+        @if (!loading) {
+          <span class="result-count ml-2">{{ devices.length }}</span>
+        }
       </h1>
       <p class="page-subtitle">Gérez l'inventaire de vos équipements réseaux</p>
     </div>
@@ -262,7 +264,9 @@
       <div class="detail-item">
         <span class="detail-label">Dernière révision</span>
         <span class="detail-value flex items-center gap-2">
-          <i class="pi pi-calendar text-slate-400" *ngIf="selectedDevice.lastReview"></i>
+          @if (selectedDevice.lastReview) {
+            <i class="pi pi-calendar text-slate-400"></i>
+          }
           {{ selectedDevice.lastReview ? (selectedDevice.lastReview | date:'dd/MM/yyyy') : 'Jamais' }}
         </span>
       </div>

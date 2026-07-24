@@ -7,7 +7,9 @@
           <i class="pi pi-shield"></i>
         </div>
         Device Roles
-        <span class="result-count ml-2" *ngIf="!loading">{{ deviceRoles.length }}</span>
+        @if (!loading) {
+          <span class="result-count ml-2">{{ deviceRoles.length }}</span>
+        }
       </h1>
       <p class="page-subtitle">Gérez les rôles fonctionnels de vos équipements</p>
     </div>
